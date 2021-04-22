@@ -14,6 +14,7 @@ const quotes = [
     source: "Marcus Aurelius",
     citation: "Meditations",
     year: "150 BC",
+    theme: "philosophy",
   },
   {
     quote:
@@ -24,6 +25,7 @@ const quotes = [
     quote:
       "He who fears death will never do anything worth of a man who is alive",
     source: "Seneca",
+    theme: "philosophy",
   },
   {
     quote:
@@ -34,6 +36,7 @@ const quotes = [
     quote:
       "How long are you going to wait before you demand the best for yourself?",
     source: "Epictetus",
+    theme: "philosophy",
   },
 ];
 
@@ -44,22 +47,50 @@ function getRandomQuote() {
   return quotes[random];
 }
 
+// Function who generates a random color
+function getRandomColor() {
+  const r = Math.floor(Math.random() * 255 + 1);
+  const g = Math.floor(Math.random() * 255 + 1);
+  const b = Math.floor(Math.random() * 255 + 1);
+  return { r: r, g: g, b: b };
+}
+
+// Function that changes the page background color
+function changeBackgroundColor() {
+  const color = getRandomColor();
+  document.body.style.backgroundColor = `rgba(${color.r}, ${color.g}, ${color.b}, .7)`;
+}
+
 // Function that uses the random quote selected to build an HTML string hydrated with the quote object properties
-function printQuote() {
+function buildQuote() {
   const selected = getRandomQuote();
-  let html = `
+  let html = "";
+  if (selected.theme) {
+    html += `<p class="theme">${selected.theme.toUpperCase()}</p>`;
+  }
+  html += `
         <p class="quote">${selected.quote}</p>
         <p class="source">${selected.source}
   `;
   if (selected.citation) {
-    html += `<span class="citation">${selected.citation}</span>`
+    html += `<span class="citation">${selected.citation}</span>`;
   }
   if (selected.year) {
-    html += `<span class="year">${selected.year}</span>`
+    html += `<span class="year">${selected.year}</span>`;
   }
-  html+= '</p>'
-  document.getElementById('quote-box').innerHTML = html
+  html += "</p>";
+  return html;
 }
+
+// Function who starts all the process of selecting, inserting, changing banckground, etc...
+function printQuote() {
+  changeBackgroundColor();
+  const html = buildQuote();
+  document.getElementById("quote-box").innerHTML = html;
+}
+
+// Starts an interval for auto-refreshing quotes
+setInterval(printQuote, 10000)
 
 /***
  * click event listener for the print quote button
